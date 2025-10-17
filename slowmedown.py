@@ -26,7 +26,8 @@ def change_speed_preserve_pitch(audio_data, sr, speed_factor):
 
 def enhance_guitar_frequencies(audio_data, sr):
     """
-    Enhance guitar frequency range (80 Hz - 5 kHz) using parametric EQ.
+    Enhance guitar frequency range (70 Hz - 5 kHz) using parametric EQ.
+    Covers low E string (~82 Hz) with minimal bass rumble.
     
     Args:
         audio_data: numpy array of audio samples
@@ -37,16 +38,16 @@ def enhance_guitar_frequencies(audio_data, sr):
     """
     nyquist = sr / 2
     
-    # Design bandpass filter for guitar range (80 Hz - 5 kHz)
-    low_freq = 80 / nyquist
+    # Design bandpass filter for guitar range (70 Hz - 5 kHz)
+    low_freq = 70 / nyquist
     high_freq = 5000 / nyquist
     
     # Create a gentle boost using a bandpass filter
     sos = signal.butter(4, [low_freq, high_freq], btype='band', output='sos')
     filtered = signal.sosfilt(sos, audio_data)
     
-    # Mix original with filtered (boost by ~3dB)
-    enhanced = audio_data * 0.7 + filtered * 0.5
+    # Mix original with filtered to boost guitar range by ~3dB
+    enhanced = audio_data + filtered * 0.4
     
     # Normalize to prevent clipping
     max_val = np.max(np.abs(enhanced))
@@ -94,7 +95,7 @@ def mono_to_stereo_effect(audio_data, sr):
 @click.option('--enhance-guitar', '-g', is_flag=True, help='Enhance guitar frequency range (80 Hz - 5 kHz)')
 @click.option('--stereo', '-st', is_flag=True, help='Convert mono to pseudo-stereo')
 @click.option('--output', '-o', default=None, help='Output file path (default: input_slowed.mp3)', type=click.Path())
-@click.option('--format', '-f', default='mp3', type=click.Choice(['mp3', 'wav'], case_sensitive=False), help='Output format')
+@click.option('--format', '-f', default='mp3', type=click.Choice(['mp3', 'wav', 'ogg'], case_sensitive=False), help='Output format')
 def slowmedown(input_file, speed, enhance_guitar, stereo, output, format):
     """
     Slow down MP3/audio files for guitar practice while preserving pitch.
@@ -143,10 +144,14 @@ def slowmedown(input_file, speed, enhance_guitar, stereo, output, format):
     temp_wav = output.replace(f'.{format}', '_temp.wav')
     sf.write(temp_wav, audio_data, sr)
     
-    # Convert to final format if MP3
+    # Convert to final format if MP3 or OGG
     if format.lower() == 'mp3':
         audio_segment = AudioSegment.from_wav(temp_wav)
         audio_segment.export(output, format='mp3', bitrate='320k')
+        os.remove(temp_wav)
+    elif format.lower() == 'ogg':
+        audio_segment = AudioSegment.from_wav(temp_wav)
+        audio_segment.export(output, format='ogg', codec='libvorbis')
         os.remove(temp_wav)
     else:
         os.rename(temp_wav, output)
