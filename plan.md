@@ -6,27 +6,30 @@ Create comprehensive tests for the audio processing pipeline to verify tempo cha
 ---
 
 ## Phase 1: Test Infrastructure Setup
-- [ ] Add `pytest` to requirements.txt
-- [ ] Create `tests/` directory
-- [ ] Create `tests/test_audio_processing.py` for unit tests
-- [ ] Create `tests/test_cli.py` for integration/CLI tests
-- [ ] Create `tests/conftest.py` for pytest fixtures (synthetic audio generation)
+- [x] Add `pytest` to requirements.txt
+- [x] Create `tests/` directory
+- [x] Create `tests/test_audio_processing.py` for unit tests
+- [x] Create `tests/test_cli.py` for integration/CLI tests
+- [x] Create `tests/conftest.py` for pytest fixtures (synthetic audio generation)
 
 ---
 
 ## Phase 2: Unit Tests - Audio Processing Functions
 
-### 2.1 `change_speed_preserve_pitch()` Tests
+### 2.1 `change_speed_preserve_pitch()` Tests - Duration Verification
 - [ ] **Duration verification**: Output length = input length / speed_factor
   - Test with speed=0.75 (expect 1.33x longer)
   - Test with speed=1.5 (expect 0.67x shorter)
   - Test with speed=1.0 (expect same length)
-- [ ] **Pitch preservation**: Use `librosa.piptrack()` to extract fundamental frequency
-  - Verify F0 remains constant despite tempo change
 - [ ] **Array shape**: Verify output is 1D numpy array
 - [ ] **Sample rate**: Confirm SR unchanged
 
-### 2.2 `enhance_guitar_frequencies()` Tests
+### 2.2 `change_speed_preserve_pitch()` Tests - Pitch Preservation (DEFERRED)
+- [ ] **Pitch preservation**: Use `librosa.piptrack()` to extract fundamental frequency
+  - Verify F0 remains constant despite tempo change
+  - Note: Requires further research on reliable pitch extraction methods
+
+### 2.3 `enhance_guitar_frequencies()` Tests
 - [ ] **Frequency boost verification**: Generate sine waves at test frequencies
   - 80 Hz (low end of boost range) - should be boosted
   - 1 kHz (middle of guitar range) - should be boosted most
@@ -36,7 +39,7 @@ Create comprehensive tests for the audio processing pipeline to verify tempo cha
 - [ ] **No clipping**: Check max(abs(output)) <= 1.0
 - [ ] **Array shape preservation**: Input shape == output shape
 
-### 2.3 `mono_to_stereo_effect()` Tests
+### 2.4 `mono_to_stereo_effect()` Tests
 - [ ] **Stereo output shape**: (2, n_samples) for mono input
 - [ ] **Already stereo passthrough**: Stereo input returns unchanged
 - [ ] **Channel difference**: Left != Right (verify Haas delay applied)
