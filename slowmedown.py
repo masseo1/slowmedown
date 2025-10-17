@@ -145,7 +145,8 @@ def slowmedown(input_file, speed, enhance_guitar, stereo, output, format):
     # Determine output filename
     if output is None:
         base, ext = os.path.splitext(input_file)
-        output = f"{base}_slowed.{format}"
+        speed_percentage = int(speed * 100)
+        output = f"{base}_slowed_{speed_percentage}pct.{format}"
     
     # Export processed audio
     click.echo(f"Exporting to {output}...")
