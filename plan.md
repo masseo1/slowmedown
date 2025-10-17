@@ -24,10 +24,11 @@ Create comprehensive tests for the audio processing pipeline to verify tempo cha
 - [x] **Array shape**: Verify output is 1D numpy array
 - [x] **Sample rate**: Confirm SR unchanged
 
-### 2.2 `change_speed_preserve_pitch()` Tests - Pitch Preservation (DEFERRED)
-- [ ] **Pitch preservation**: Use `librosa.piptrack()` to extract fundamental frequency
-  - Verify F0 remains constant despite tempo change
-  - Note: Requires further research on reliable pitch extraction methods
+### 2.2 `change_speed_preserve_pitch()` Tests - Pitch Preservation
+- [x] **Pitch preservation**: Use `librosa.piptrack()` to extract fundamental frequency
+  - Verify F0 remains constant despite tempo change (within 15 Hz tolerance)
+  - Test with speed=0.75 (slower)
+  - Test with speed=1.5 (faster)
 
 ### 2.3 `enhance_guitar_frequencies()` Tests
 - [x] **Frequency boost verification**: Generate sine waves at test frequencies
@@ -152,7 +153,7 @@ pytest tests/test_audio_processing.py::test_speed_change_duration -v
 ---
 
 ## Success Criteria
-- [x] All unit tests pass (25/25)
+- [x] All unit tests pass (27/27)
 - [x] All integration tests pass
 - [x] No deprecation warnings
 - [x] Tests run in < 30 seconds (~2.3s)
@@ -166,4 +167,5 @@ pytest tests/test_audio_processing.py::test_speed_change_duration -v
 - [x] Fixed PYTHONPATH issue in conftest.py
 - [x] Replaced deprecated `librosa.get_duration(filename=)` with `path=`
 - [x] Merged OGG support into main branch
-- [x] All 25 tests passing with zero warnings
+- [x] All 27 tests passing with zero warnings
+- [x] Implemented Phase 2.2 pitch preservation tests

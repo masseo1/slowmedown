@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+import librosa
 from slowmedown import (
     change_speed_preserve_pitch,
     enhance_guitar_frequencies,
@@ -64,6 +65,48 @@ class TestChangeSpeedPreservePitch:
         processed = change_speed_preserve_pitch(audio_data, sr, 0.75)
         
         assert sr == sample_rate
+    
+    def test_pitch_preservation_slower(self, generate_sine_wave, sample_rate):
+        """Test that pitch (F0) is preserved when slowing down (0.75x)."""
+        frequency = 440
+        audio_data, sr = generate_sine_wave(frequency, 2.0, sample_rate)
+        speed_factor = 0.75
+        
+        processed = change_speed_preserve_pitch(audio_data, sr, speed_factor)
+        
+        pitches_orig, mag_orig = librosa.piptrack(y=audio_data, sr=sr, fmin=80, fmax=1000)
+        pitches_proc, mag_proc = librosa.piptrack(y=processed, sr=sr, fmin=80, fmax=1000)
+        
+        f0_orig = pitches_orig[mag_orig.argmax(axis=0), range(mag_orig.shape[1])].mean()
+        f0_proc = pitches_proc[mag_proc.argmax(axis=0), range(mag_proc.shape[1])].mean()
+        
+        f0_orig = f0_orig[f0_orig > 0].mean() if np.any(f0_orig > 0) else 0
+        f0_proc = f0_proc[f0_proc > 0].mean() if np.any(f0_proc > 0) else 0
+        
+        assert abs(f0_orig - frequency) < 20
+        assert abs(f0_proc - frequency) < 20
+        assert abs(f0_orig - f0_proc) < 15
+    
+    def test_pitch_preservation_faster(self, generate_sine_wave, sample_rate):
+        """Test that pitch (F0) is preserved when speeding up (1.5x)."""
+        frequency = 440
+        audio_data, sr = generate_sine_wave(frequency, 2.0, sample_rate)
+        speed_factor = 1.5
+        
+        processed = change_speed_preserve_pitch(audio_data, sr, speed_factor)
+        
+        pitches_orig, mag_orig = librosa.piptrack(y=audio_data, sr=sr, fmin=80, fmax=1000)
+        pitches_proc, mag_proc = librosa.piptrack(y=processed, sr=sr, fmin=80, fmax=1000)
+        
+        f0_orig = pitches_orig[mag_orig.argmax(axis=0), range(mag_orig.shape[1])].mean()
+        f0_proc = pitches_proc[mag_proc.argmax(axis=0), range(mag_proc.shape[1])].mean()
+        
+        f0_orig = f0_orig[f0_orig > 0].mean() if np.any(f0_orig > 0) else 0
+        f0_proc = f0_proc[f0_proc > 0].mean() if np.any(f0_proc > 0) else 0
+        
+        assert abs(f0_orig - frequency) < 20
+        assert abs(f0_proc - frequency) < 20
+        assert abs(f0_orig - f0_proc) < 15
 
 
 class TestEnhanceGuitarFrequencies:
