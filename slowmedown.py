@@ -94,7 +94,7 @@ def mono_to_stereo_effect(audio_data, sr):
 @click.option('--enhance-guitar', '-g', is_flag=True, help='Enhance guitar frequency range (80 Hz - 5 kHz)')
 @click.option('--stereo', '-st', is_flag=True, help='Convert mono to pseudo-stereo')
 @click.option('--output', '-o', default=None, help='Output file path (default: input_slowed.mp3)', type=click.Path())
-@click.option('--format', '-f', default='mp3', type=click.Choice(['mp3', 'wav'], case_sensitive=False), help='Output format')
+@click.option('--format', '-f', default='mp3', type=click.Choice(['mp3', 'wav', 'ogg'], case_sensitive=False), help='Output format')
 def slowmedown(input_file, speed, enhance_guitar, stereo, output, format):
     """
     Slow down MP3/audio files for guitar practice while preserving pitch.
@@ -143,10 +143,14 @@ def slowmedown(input_file, speed, enhance_guitar, stereo, output, format):
     temp_wav = output.replace(f'.{format}', '_temp.wav')
     sf.write(temp_wav, audio_data, sr)
     
-    # Convert to final format if MP3
+    # Convert to final format if MP3 or OGG
     if format.lower() == 'mp3':
         audio_segment = AudioSegment.from_wav(temp_wav)
         audio_segment.export(output, format='mp3', bitrate='320k')
+        os.remove(temp_wav)
+    elif format.lower() == 'ogg':
+        audio_segment = AudioSegment.from_wav(temp_wav)
+        audio_segment.export(output, format='ogg', codec='libvorbis')
         os.remove(temp_wav)
     else:
         os.rename(temp_wav, output)
