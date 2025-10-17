@@ -50,8 +50,8 @@ class TestCLIBasic:
             assert os.path.exists(output_path)
             assert os.path.getsize(output_path) > 0
             
-            input_duration = librosa.get_duration(filename=temp_audio_file)
-            output_duration = librosa.get_duration(filename=output_path)
+            input_duration = librosa.get_duration(path=temp_audio_file)
+            output_duration = librosa.get_duration(path=output_path)
             
             expected_duration = input_duration / 0.75
             assert abs(output_duration - expected_duration) < 0.2
@@ -171,8 +171,8 @@ class TestCLIEndToEnd:
             
             assert result.exit_code == 0
             
-            input_duration = librosa.get_duration(filename=temp_audio_file)
-            output_duration = librosa.get_duration(filename=output_path)
+            input_duration = librosa.get_duration(path=temp_audio_file)
+            output_duration = librosa.get_duration(path=output_path)
             
             expected_ratio = 1 / speed_factor
             actual_ratio = output_duration / input_duration
