@@ -4,7 +4,7 @@
 
 ### *Master Guitar Solos at Your Own Pace*
 
-**AI-Powered Audio Processing for Musicians**
+** Audio Processing for Musicians**
 
 [![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
@@ -265,8 +265,8 @@ MIT License - feel free to use for any purpose!
 
 ### 🌟 Made with ❤️ for guitarists by guitarists
 
-**[Report Bug](https://github.com/masseo1/mono2better/issues)** • 
-**[Request Feature](https://github.com/masseo1/mono2better/issues)** • 
-**[Contribute](https://github.com/masseo1/mono2better/pulls)**
+**[Report Bug](https://github.com/masseo1/slowmedown/issues)** • 
+**[Request Feature](https://github.com/masseo1/slowmedown/issues)** • 
+**[Contribute](https://github.com/masseo1/slowmedown/pulls)**
 
 </div>
