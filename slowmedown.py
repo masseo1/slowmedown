@@ -26,8 +26,8 @@ def change_speed_preserve_pitch(audio_data, sr, speed_factor):
 
 def enhance_guitar_frequencies(audio_data, sr):
     """
-    Enhance guitar frequency range (60 Hz - 5 kHz) using parametric EQ.
-    Covers low E string (~82 Hz) down to bass fundamentals.
+    Enhance guitar frequency range (70 Hz - 5 kHz) using parametric EQ.
+    Covers low E string (~82 Hz) with minimal bass rumble.
     
     Args:
         audio_data: numpy array of audio samples
@@ -38,8 +38,8 @@ def enhance_guitar_frequencies(audio_data, sr):
     """
     nyquist = sr / 2
     
-    # Design bandpass filter for guitar range (60 Hz - 5 kHz)
-    low_freq = 60 / nyquist
+    # Design bandpass filter for guitar range (70 Hz - 5 kHz)
+    low_freq = 70 / nyquist
     high_freq = 5000 / nyquist
     
     # Create a gentle boost using a bandpass filter
