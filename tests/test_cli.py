@@ -219,3 +219,125 @@ class TestCLIEndToEnd:
         finally:
             if os.path.exists(output_path):
                 os.remove(output_path)
+
+
+class TestCLIEdgeCases:
+    """Edge cases and error handling tests."""
+    
+    def test_nonexistent_input_file(self, cli_runner):
+        """Test that nonexistent input file fails gracefully."""
+        result = cli_runner.invoke(slowmedown, ['nonexistent_file.mp3'])
+        assert result.exit_code != 0
+    
+    def test_corrupted_input_file(self, cli_runner):
+        """Test that corrupted input file fails gracefully."""
+        with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as f:
+            f.write(b'This is not an audio file')
+            temp_path = f.name
+        
+        try:
+            result = cli_runner.invoke(slowmedown, [temp_path, '--speed', '0.75'])
+            assert result.exit_code != 0
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+    
+    def test_empty_input_file(self, cli_runner):
+        """Test that empty input file fails gracefully."""
+        with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as f:
+            temp_path = f.name
+        
+        try:
+            result = cli_runner.invoke(slowmedown, [temp_path, '--speed', '0.75'])
+            assert result.exit_code != 0
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+    
+    def test_invalid_speed_zero(self, cli_runner, temp_audio_file):
+        """Test that speed factor of 0 is rejected."""
+        result = cli_runner.invoke(slowmedown, [temp_audio_file, '--speed', '0'])
+        assert result.exit_code != 0
+    
+    def test_invalid_speed_negative(self, cli_runner, temp_audio_file):
+        """Test that negative speed factor is rejected."""
+        result = cli_runner.invoke(slowmedown, [temp_audio_file, '--speed', '-0.5'])
+        assert result.exit_code != 0
+    
+    def test_extreme_speed_very_slow(self, cli_runner, temp_audio_file):
+        """Test extreme speed factor (very slow)."""
+        output_path = temp_audio_file.replace('.mp3', '_slowed.mp3')
+        
+        try:
+            result = cli_runner.invoke(slowmedown, [temp_audio_file, '--speed', '0.1'])
+            assert result.exit_code == 0
+            assert os.path.exists(output_path)
+        finally:
+            if os.path.exists(output_path):
+                os.remove(output_path)
+    
+    def test_extreme_speed_very_fast(self, cli_runner, temp_audio_file):
+        """Test extreme speed factor (very fast)."""
+        output_path = temp_audio_file.replace('.mp3', '_slowed.mp3')
+        
+        try:
+            result = cli_runner.invoke(slowmedown, [temp_audio_file, '--speed', '10.0'])
+            assert result.exit_code == 0
+            assert os.path.exists(output_path)
+        finally:
+            if os.path.exists(output_path):
+                os.remove(output_path)
+    
+    def test_very_short_audio(self, cli_runner, generate_sine_wave):
+        """Test very short audio (<100ms)."""
+        with tempfile.NamedTemporaryFile(suffix='.mp3', delete=False) as f:
+            temp_path = f.name
+        
+        audio_data, sr = generate_sine_wave(440, 0.05, 22050)
+        
+        wav_temp = temp_path.replace('.mp3', '_temp.wav')
+        sf.write(wav_temp, audio_data, sr)
+        
+        from pydub import AudioSegment
+        audio_segment = AudioSegment.from_wav(wav_temp)
+        audio_segment.export(temp_path, format='mp3')
+        os.remove(wav_temp)
+        
+        output_path = temp_path.replace('.mp3', '_slowed.mp3')
+        
+        try:
+            result = cli_runner.invoke(slowmedown, [temp_path, '--speed', '0.75'])
+            assert result.exit_code == 0
+            assert os.path.exists(output_path)
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+            if os.path.exists(output_path):
+                os.remove(output_path)
+    
+    def test_unicode_filename(self, cli_runner, generate_sine_wave):
+        """Test Unicode filenames."""
+        with tempfile.NamedTemporaryFile(suffix='_测试_café.mp3', delete=False) as f:
+            temp_path = f.name
+        
+        audio_data, sr = generate_sine_wave(440, 1.0, 22050)
+        
+        wav_temp = temp_path.replace('.mp3', '_temp.wav')
+        sf.write(wav_temp, audio_data, sr)
+        
+        from pydub import AudioSegment
+        audio_segment = AudioSegment.from_wav(wav_temp)
+        audio_segment.export(temp_path, format='mp3')
+        os.remove(wav_temp)
+        
+        output_path = temp_path.replace('.mp3', '_slowed.mp3')
+        
+        try:
+            result = cli_runner.invoke(slowmedown, [temp_path, '--speed', '0.75'])
+            assert result.exit_code == 0
+            assert os.path.exists(output_path)
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+            if os.path.exists(output_path):
+                os.remove(output_path)

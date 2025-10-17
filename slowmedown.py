@@ -102,10 +102,24 @@ def slowmedown(input_file, speed, enhance_guitar, stereo, output, format):
     
     Example: python slowmedown.py song.mp3 --speed 0.75 --enhance-guitar --stereo
     """
+    # Validate speed factor
+    if speed <= 0:
+        raise click.BadParameter("Speed factor must be greater than 0", param_hint="--speed")
+    
+    # Check if file exists and is readable
+    if not os.path.exists(input_file):
+        raise click.FileError(input_file, hint="File does not exist")
+    
+    if os.path.getsize(input_file) == 0:
+        raise click.FileError(input_file, hint="File is empty")
+    
     click.echo(f"Loading audio file: {input_file}")
     
     # Load audio with librosa
-    audio_data, sr = librosa.load(input_file, sr=None, mono=True)
+    try:
+        audio_data, sr = librosa.load(input_file, sr=None, mono=True)
+    except Exception as e:
+        raise click.ClickException(f"Failed to load audio file: {str(e)}")
     
     click.echo(f"Sample rate: {sr} Hz, Duration: {len(audio_data)/sr:.2f}s")
     

@@ -74,12 +74,12 @@ Create comprehensive tests for the audio processing pipeline to verify tempo cha
 ---
 
 ## Phase 4: Edge Cases & Error Handling
-- [ ] Empty/corrupted input file
-- [ ] Invalid speed factors (0, negative, extreme values)
-- [ ] Missing FFmpeg (should fail gracefully)
-- [ ] Very short audio (<100ms)
-- [ ] Very long audio (memory handling)
-- [ ] Unicode filenames
+- [x] Empty/corrupted input file
+- [x] Invalid speed factors (0, negative, extreme values)
+- [ ] Missing FFmpeg (should fail gracefully) - Low priority, requires FFmpeg uninstallation
+- [x] Very short audio (<100ms)
+- [ ] Very long audio (memory handling) - Low priority, requires large test files
+- [x] Unicode filenames
 
 ---
 
@@ -159,7 +159,7 @@ pytest tests/test_audio_processing.py::test_speed_change_duration -v
 - [x] Tests run in < 30 seconds (~2.3s)
 - [x] No actual large audio files in repo (use synthetic signals)
 - [ ] Code coverage > 80%
-- [ ] Edge cases handled gracefully
+- [x] Edge cases handled gracefully (9/9 tests passing)
 
 ---
 
