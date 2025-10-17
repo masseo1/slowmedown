@@ -17,12 +17,12 @@ Create comprehensive tests for the audio processing pipeline to verify tempo cha
 ## Phase 2: Unit Tests - Audio Processing Functions
 
 ### 2.1 `change_speed_preserve_pitch()` Tests - Duration Verification
-- [ ] **Duration verification**: Output length = input length / speed_factor
+- [x] **Duration verification**: Output length = input length / speed_factor
   - Test with speed=0.75 (expect 1.33x longer)
   - Test with speed=1.5 (expect 0.67x shorter)
   - Test with speed=1.0 (expect same length)
-- [ ] **Array shape**: Verify output is 1D numpy array
-- [ ] **Sample rate**: Confirm SR unchanged
+- [x] **Array shape**: Verify output is 1D numpy array
+- [x] **Sample rate**: Confirm SR unchanged
 
 ### 2.2 `change_speed_preserve_pitch()` Tests - Pitch Preservation (DEFERRED)
 - [ ] **Pitch preservation**: Use `librosa.piptrack()` to extract fundamental frequency
@@ -30,45 +30,45 @@ Create comprehensive tests for the audio processing pipeline to verify tempo cha
   - Note: Requires further research on reliable pitch extraction methods
 
 ### 2.3 `enhance_guitar_frequencies()` Tests
-- [ ] **Frequency boost verification**: Generate sine waves at test frequencies
+- [x] **Frequency boost verification**: Generate sine waves at test frequencies
   - 80 Hz (low end of boost range) - should be boosted
   - 1 kHz (middle of guitar range) - should be boosted most
   - 50 Hz (below range) - should be attenuated/unchanged
   - 8 kHz (above range) - should be attenuated/unchanged
-- [ ] **Normalization**: Verify output doesn't exceed [-1.0, 1.0]
-- [ ] **No clipping**: Check max(abs(output)) <= 1.0
-- [ ] **Array shape preservation**: Input shape == output shape
+- [x] **Normalization**: Verify output doesn't exceed [-1.0, 1.0]
+- [x] **No clipping**: Check max(abs(output)) <= 1.0
+- [x] **Array shape preservation**: Input shape == output shape
 
 ### 2.4 `mono_to_stereo_effect()` Tests
-- [ ] **Stereo output shape**: (2, n_samples) for mono input
-- [ ] **Already stereo passthrough**: Stereo input returns unchanged
-- [ ] **Channel difference**: Left != Right (verify Haas delay applied)
-- [ ] **Delay verification**: ~15ms offset between channels
-- [ ] **Amplitude check**: Both channels within [-1.0, 1.0]
+- [x] **Stereo output shape**: (2, n_samples) for mono input
+- [x] **Already stereo passthrough**: Stereo input returns unchanged
+- [x] **Channel difference**: Left != Right (verify Haas delay applied)
+- [x] **Delay verification**: ~15ms offset between channels
+- [x] **Amplitude check**: Both channels within [-1.0, 1.0]
 
 ---
 
 ## Phase 3: Integration Tests - CLI Command
 
 ### 3.1 File I/O Tests
-- [ ] Create small test MP3 fixture (~1 second sine wave)
-- [ ] Test basic slowdown: `--speed 0.75`
+- [x] Create small test MP3 fixture (~1 second sine wave)
+- [x] Test basic slowdown: `--speed 0.75`
   - Verify output file created
   - Load output, check duration ratio
-- [ ] Test all options combined: `-s 0.5 -g -st`
-- [ ] Test output formats: MP3, WAV, OGG
-- [ ] Test custom output path: `-o custom.mp3`
+- [x] Test all options combined: `-s 0.5 -g -st`
+- [x] Test output formats: MP3, WAV, OGG
+- [x] Test custom output path: `-o custom.mp3`
 
 ### 3.2 End-to-End Verification
-- [ ] **Duration check**: 
+- [x] **Duration check**: 
   ```python
   input_duration = librosa.get_duration(filename=input_file)
   output_duration = librosa.get_duration(filename=output_file)
   assert abs(output_duration / input_duration - 1/speed_factor) < 0.05
   ```
-- [ ] **File existence**: Output file created and non-empty
-- [ ] **Format verification**: Can load output with librosa
-- [ ] **Stereo channel count**: Stereo flag produces 2 channels
+- [x] **File existence**: Output file created and non-empty
+- [x] **Format verification**: Can load output with librosa
+- [x] **Stereo channel count**: Stereo flag produces 2 channels
 
 ---
 
@@ -152,9 +152,9 @@ pytest tests/test_audio_processing.py::test_speed_change_duration -v
 ---
 
 ## Success Criteria
-- [ ] All unit tests pass
-- [ ] All integration tests pass
+- [x] All unit tests pass
+- [x] All integration tests pass
 - [ ] Code coverage > 80%
 - [ ] Edge cases handled gracefully
 - [ ] Tests run in < 30 seconds
-- [ ] No actual large audio files in repo (use synthetic signals)
+- [x] No actual large audio files in repo (use synthetic signals)
