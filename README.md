@@ -41,7 +41,7 @@ Transform flat mono tracks into rich **pseudo-stereo** soundscapes using Haas ef
 <td width="50%">
 
 ### 💾 Multiple Export Formats
-Save your processed tracks as high-quality **MP3 (320kbps)** or uncompressed **WAV** files.
+Save your processed tracks as high-quality **MP3 (320kbps)**, uncompressed **WAV**, or **OGG Vorbis** files.
 
 </td>
 </tr>
@@ -64,7 +64,7 @@ graph LR
     G -->|Yes| H[Haas Effect<br/>15ms Delay<br/>Phase Shift]
     G -->|No| I[Export Audio]
     H --> I
-    I --> J[🎸 Output File<br/>MP3/WAV]
+    I --> J[🎸 Output File<br/>MP3/WAV/OGG]
     
     classDef inputStyle fill:#1a1a2e,stroke:#16c79a,color:#fff,stroke-width:3px
     classDef processStyle fill:#0f4c75,stroke:#3282b8,color:#fff,stroke-width:2px
@@ -124,7 +124,7 @@ python slowmedown.py [INPUT_FILE] [OPTIONS]
 | `--enhance-guitar` | `-g` | Boost guitar frequencies | `off` | `-g` |
 | `--stereo` | `-st` | Convert to pseudo-stereo | `off` | `-st` |
 | `--output` | `-o` | Output file path | `input_slowed.mp3` | `-o practice.mp3` |
-| `--format` | `-f` | Export format (mp3/wav) | `mp3` | `-f wav` |
+| `--format` | `-f` | Export format (mp3/wav/ogg) | `mp3` | `-f wav` |
 
 ---
 
@@ -165,7 +165,7 @@ python slowmedown.py metallica.mp3 -s 0.5 -g -st -o master_of_puppets_practice.m
 | **Pitch Preservation** | Librosa Phase Vocoder | Time-stretch without changing pitch |
 | **Guitar EQ** | Scipy Bandpass Filter | Isolate and boost 80Hz-5kHz range |
 | **Stereo Effect** | Haas Effect + Phase | Create spatial width from mono |
-| **Audio I/O** | Pydub + Soundfile | Handle MP3/WAV import/export |
+| **Audio I/O** | Pydub + Soundfile | Handle MP3/WAV/OGG import/export |
 
 ### ⚙️ Processing Details
 
